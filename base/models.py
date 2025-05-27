@@ -20,14 +20,15 @@ class Movie(models.Model):
     director = models.CharField(max_length=50, null=False, blank=False)
     description = models.TextField(default='')
 
-    def updateScore(self, newVoteScore):
+    def updateScore(self, newReviewScore):
         old_total = self.score * self.numberOfVotes
         self.numberOfVotes += 1
-        self.score = (old_total + newVoteScore) / self.numberOfVotes
+        self.score = (old_total + newReviewScore) / self.numberOfVotes
         self.save()
 
-class Vote(models.Model):
+class Review(models.Model):
     id = models.AutoField(primary_key=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
     score = models.FloatField(null=False, validators=[MinValueValidator(0.0), MinValueValidator(10.0)])
-    voteDate = models.DateTimeField(auto_created=True, auto_now=True)
+    reviewText = models.TextField(null=False, blank=False, max_length=500)
+    reviewDate = models.DateTimeField(auto_created=True, auto_now=True)

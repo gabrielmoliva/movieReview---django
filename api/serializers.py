@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from base.models import Movie, Vote
+from base.models import Movie, Review
 
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
@@ -11,7 +11,7 @@ class MoviePostSerializer(serializers.ModelSerializer):
         model = Movie
         fields = ('name', 'launchDate', 'language', 'rating', 'country', 'director', 'description')
 
-class VoteSerializer(serializers.ModelSerializer):
+class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Vote
+        model = Review
         fields = '__all__'
