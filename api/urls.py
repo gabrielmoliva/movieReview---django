@@ -9,4 +9,5 @@ urlpatterns = [
     path('movies/<int:movie_id>/reviews', views.getAllReviews),
     path('actors', views.getAllActors),
     path('actors/add', views.addActor),
+    path('movies/<int:movie_id>/addActor/<int:actor_id>', views.addActorToMovie)
 ]

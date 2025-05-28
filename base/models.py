@@ -7,6 +7,10 @@ class Actor(models.Model):
     name = models.CharField(null=False, blank=False, max_length=200)
     numberMovies = models.IntegerField(default=0)
 
+    def incrementMovies(self):
+        self.numberMovies+=1
+        self.save()
+
 class Movie(models.Model):
     RATING_CHOICES = [
         ('G', 'General Public'),
@@ -30,6 +34,10 @@ class Movie(models.Model):
         old_total = self.score * self.numberOfVotes
         self.numberOfVotes += 1
         self.score = (old_total + newReviewScore) / self.numberOfVotes
+        self.save()
+
+    def addActor(self, actor):
+        self.actors.add(actor)
         self.save()
 
 class Review(models.Model):

@@ -69,3 +69,22 @@ def addActor(request):
         return Response(serializer.data, status=201)
     
     return Response(serializer.errors, status=400)
+
+@api_view(['POST'])
+def addActorToMovie(request, movie_id, actor_id):
+    try:
+        movie = Movie.objects.filter(pk=movie_id).get()
+    except Movie.DoesNotExist:
+        return Response({'detail': 'Movie not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        actor = Actor.objects.filter(pk=actor_id).get()
+    except Actor.DoesNotExist:
+        return Response({'detail': 'Actor not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        movie.addActor(actor)
+        actor.incrementMovies()
+        return Response({'detail': 'Actor added to movie.'}, status=status.HTTP_200_OK)
+    except Exception as e:
+        return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
