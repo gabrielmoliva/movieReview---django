@@ -82,6 +82,9 @@ def addActorToMovie(request, movie_id, actor_id):
     except Actor.DoesNotExist:
         return Response({'detail': 'Actor not found.'}, status=status.HTTP_404_NOT_FOUND)
     
+    if movie.containsActor(actor):
+        return Response({'detail': 'Actor is already in the movie.'}, status=status.HTTP_400_BAD_REQUEST)
+    
     try:
         movie.addActor(actor)
         actor.incrementMovies()

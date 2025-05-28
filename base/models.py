@@ -40,6 +40,9 @@ class Movie(models.Model):
         self.actors.add(actor)
         self.save()
 
+    def containsActor(self, actor):
+        return self.actors.contains(actor)
+
 class Review(models.Model):
     id = models.AutoField(primary_key=True)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
