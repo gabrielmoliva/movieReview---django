@@ -2,6 +2,11 @@ from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 
 # Create your models here.
+class Actor(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(null=False, blank=False, max_length=200)
+    numberMovies = models.IntegerField(default=0)
+
 class Movie(models.Model):
     RATING_CHOICES = [
         ('G', 'General Public'),
@@ -19,6 +24,7 @@ class Movie(models.Model):
     country = models.CharField(max_length=35, null=False, blank=False)
     director = models.CharField(max_length=50, null=False, blank=False)
     description = models.TextField(default='')
+    actors = models.ManyToManyField(Actor)
 
     def updateScore(self, newReviewScore):
         old_total = self.score * self.numberOfVotes

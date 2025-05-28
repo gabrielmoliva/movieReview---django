@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
-from base.models import Movie, Review
-from .serializers import MovieSerializer, MoviePostSerializer, ReviewSerializer
+from base.models import Movie, Review, Actor
+from .serializers import MovieSerializer, MoviePostSerializer, ReviewSerializer, ActorSerializer, ActorPostSerializer
 from rest_framework import status
 
 
@@ -49,6 +49,22 @@ def review(request):
         newVoteScore = serializer.validated_data['score']
         movie = Movie.objects.filter(pk=movie_id).get()
         movie.updateScore(newVoteScore)
+        serializer.save()
+        return Response(serializer.data, status=201)
+    
+    return Response(serializer.errors, status=400)
+
+@api_view(['GET'])
+def getAllActors(request):
+    actors = Actor.objects.all()
+    serializer = ActorSerializer(actors, many=True)
+
+    return Response(serializer.data)
+
+@api_view(['POST'])
+def addActor(request):
+    serializer = ActorPostSerializer(data=request.data)
+    if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=201)
     
