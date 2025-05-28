@@ -5,5 +5,6 @@ urlpatterns = [
     path('movies', views.getAllMovies),
     path('movies/add', views.addMovie),
     path('movies/review', views.review),
-    path('movies/<int:movie_id>', views.getMovie)
+    path('movies/<int:movie_id>', views.getMovie),
+    path('movies/<int:movie_id>/reviews', views.getAllReviews),
 ]

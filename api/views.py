@@ -22,6 +22,16 @@ def getMovie(request, movie_id):
     serializer = MovieSerializer(movie)
     return Response(serializer.data)
 
+@api_view(['GET'])
+def getAllReviews(request, movie_id):
+    try:
+        reviews = Review.objects.filter(movie_id=movie_id)
+    except Movie.DoesNotExist:
+        return Response({'detail': 'Movie not found.'}, status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = ReviewSerializer(reviews, many=True)
+    return Response(serializer.data)
+
 @api_view(['POST'])
 def addMovie(request):
     serializer = MoviePostSerializer(data=request.data)
