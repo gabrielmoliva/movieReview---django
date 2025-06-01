@@ -1,9 +1,49 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from base.models import Movie, Review, Actor
-from .serializers import MovieSerializer, MoviePostSerializer, ReviewSerializer, ActorSerializer, ActorPostSerializer
+from .serializers import MovieSerializer, MoviePostSerializer, ReviewSerializer, ActorSerializer, ActorPostSerializer, UserSerializer, RegisterUserSerializer
 from rest_framework import status
+from .authentication import CustomBasicAuthentication
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.permissions import IsAuthenticated
+from django.contrib.auth import login as django_login, logout as django_logout, authenticate
 
+# authentication
+@api_view(["POST"])
+@authentication_classes([CustomBasicAuthentication, SessionAuthentication])
+def login(request):
+    username = request.data.get("username")
+    password = request.data.get("password")
+    user = authenticate(request, username=username, password=password)
+    if user is not None:
+        django_login(request, user)
+        return Response(UserSerializer(user).data)
+    else:
+        return Response({"detail": "Invalid credentials."}, status=status.HTTP_401_UNAUTHORIZED)
+
+@api_view(["POST"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def logout(request):
+    django_logout(request)
+    return Response({})
+
+@api_view(["GET"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def me(request):
+    return Response(UserSerializer(request.user).data)
+
+@api_view(['POST'])
+def register(request):
+    serializer = RegisterUserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response({'message': 'User created successfully.'}, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# authentication
 
 @api_view(['GET'])
 def getAllMovies(request):

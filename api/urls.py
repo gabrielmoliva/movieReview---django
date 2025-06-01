@@ -10,5 +10,9 @@ urlpatterns = [
     path('actors', views.getAllActors),
     path('actors/add', views.addActor),
     path('movies/<int:movie_id>/addActor/<int:actor_id>', views.addActorToMovie),
-    path('movies/<int:movie_id>/actors', views.getMovieActors)
+    path('movies/<int:movie_id>/actors', views.getMovieActors),
+    path('login', views.login),
+    path('register', views.register),
+    path('logout', views.logout),
+    path('me', views.me),
 ]

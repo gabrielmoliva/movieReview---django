@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class Actor(models.Model):
@@ -49,3 +50,14 @@ class Review(models.Model):
     score = models.FloatField(null=False, validators=[MinValueValidator(0.0), MinValueValidator(10.0)])
     reviewText = models.TextField(null=False, blank=False, max_length=500)
     reviewDate = models.DateTimeField(auto_created=True, auto_now=True)
+
+class User(AbstractUser):
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=100, null=True, blank=True, unique=True)
+    email = models.CharField(max_length=50, null=False, blank=False, unique=True) # Field used for login
+    password = models.CharField(max_length=20, null=False, blank=False)
+
+    def create(self, username, email):
+        self.username=username
+        self.email = email
+        return self
