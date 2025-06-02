@@ -46,6 +46,8 @@ def register(request):
 # authentication
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def getAllMovies(request):
     movies = Movie.objects.all()
     serializer = MovieSerializer(movies, many=True)
@@ -53,6 +55,8 @@ def getAllMovies(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def getMovie(request, movie_id):
     try:
         movie = Movie.objects.filter(pk=movie_id).get()
@@ -63,6 +67,8 @@ def getMovie(request, movie_id):
     return Response(serializer.data)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def getAllReviews(request, movie_id):
     try:
         reviews = Review.objects.filter(movie_id=movie_id)
@@ -73,6 +79,8 @@ def getAllReviews(request, movie_id):
     return Response(serializer.data)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def addMovie(request):
     serializer = MoviePostSerializer(data=request.data)
     if serializer.is_valid():
@@ -82,6 +90,8 @@ def addMovie(request):
     return Response(serializer.errors, status=400)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def review(request):
     serializer = ReviewSerializer(data=request.data)
     if serializer.is_valid():
@@ -95,6 +105,8 @@ def review(request):
     return Response(serializer.errors, status=400)
 
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def getAllActors(request):
     actors = Actor.objects.all()
     serializer = ActorSerializer(actors, many=True)
@@ -102,6 +114,8 @@ def getAllActors(request):
     return Response(serializer.data)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def addActor(request):
     serializer = ActorPostSerializer(data=request.data)
     if serializer.is_valid():
@@ -111,6 +125,8 @@ def addActor(request):
     return Response(serializer.errors, status=400)
 
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def addActorToMovie(request, movie_id, actor_id):
     try:
         movie = Movie.objects.filter(pk=movie_id).get()
@@ -133,6 +149,8 @@ def addActorToMovie(request, movie_id, actor_id):
         return Response({"detail": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
 @api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
 def getMovieActors(request, movie_id):
     try:
         movie = Movie.objects.filter(pk=movie_id).get()
