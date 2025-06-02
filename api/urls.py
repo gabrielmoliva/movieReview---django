@@ -16,4 +16,5 @@ urlpatterns = [
     path('logout', views.logout),
     path('me', views.me),
     path('users/<int:user_id>/reviews', views.getReviewsByUser),
+    path('users', views.getAllUsers),
 ]

@@ -170,5 +170,14 @@ def getMovieActors(request, movie_id):
         return Response({'detail': 'Movie not found.'}, status=status.HTTP_404_NOT_FOUND)
     
     actors = movie.actors
-    serialier = ActorSerializer(actors, many=True)
-    return Response(serialier.data)
+    serializer = ActorSerializer(actors, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def getAllUsers(request):
+    users = User.objects.all()
+    serializer = UserSerializer(users, many=True)
+    
+    return Response(serializer.data)
