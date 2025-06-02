@@ -1,6 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from base.models import Movie, Review, Actor
+from base.models import Movie, Review, Actor, User
 from .serializers import MovieSerializer, MoviePostSerializer, ReviewCreateSerializer, ActorSerializer, ActorPostSerializer, UserSerializer, RegisterUserSerializer, ReviewGetSerializer
 from rest_framework import status
 from .authentication import CustomBasicAuthentication
@@ -69,7 +69,7 @@ def getMovie(request, movie_id):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def getAllReviews(request, movie_id):
+def getReviewsByMovie(request, movie_id):
     try:
         reviews = Review.objects.filter(movie_id=movie_id)
     except Movie.DoesNotExist:
@@ -78,17 +78,18 @@ def getAllReviews(request, movie_id):
     serializer = ReviewGetSerializer(reviews, many=True)
     return Response(serializer.data)
 
-@api_view(['POST'])
+@api_view(['GET'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
-def addMovie(request):
-    serializer = MoviePostSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=201)
+def getReviewsByUser(request, user_id):
+    try:
+        reviews = Review.objects.filter(user_id=user_id)
+    except User.DoesNotExist:
+        return Response({'detail': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
     
-    return Response(serializer.errors, status=400)
-
+    serializer = ReviewGetSerializer(reviews, many=True)
+    return Response(serializer.data)
+    
 @api_view(['POST'])
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
@@ -100,6 +101,17 @@ def review(request):
         movie = Movie.objects.filter(pk=movie_id).get()
         movie.updateScore(newVoteScore)
         serializer.save(user=request.user)
+        return Response(serializer.data, status=201)
+    
+    return Response(serializer.errors, status=400)
+
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsAuthenticated])
+def addMovie(request):
+    serializer = MoviePostSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
         return Response(serializer.data, status=201)
     
     return Response(serializer.errors, status=400)

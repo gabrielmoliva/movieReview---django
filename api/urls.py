@@ -6,7 +6,7 @@ urlpatterns = [
     path('movies/add', views.addMovie),
     path('movies/review', views.review),
     path('movies/<int:movie_id>', views.getMovie),
-    path('movies/<int:movie_id>/reviews', views.getAllReviews),
+    path('movies/<int:movie_id>/reviews', views.getReviewsByMovie),
     path('actors', views.getAllActors),
     path('actors/add', views.addActor),
     path('movies/<int:movie_id>/addActor/<int:actor_id>', views.addActorToMovie),
@@ -15,4 +15,5 @@ urlpatterns = [
     path('register', views.register),
     path('logout', views.logout),
     path('me', views.me),
+    path('users/<int:user_id>/reviews', views.getReviewsByUser),
 ]
