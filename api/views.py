@@ -1,7 +1,7 @@
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from base.models import Movie, Review, Actor
-from .serializers import MovieSerializer, MoviePostSerializer, ReviewSerializer, ActorSerializer, ActorPostSerializer, UserSerializer, RegisterUserSerializer
+from .serializers import MovieSerializer, MoviePostSerializer, ReviewCreateSerializer, ActorSerializer, ActorPostSerializer, UserSerializer, RegisterUserSerializer, ReviewGetSerializer
 from rest_framework import status
 from .authentication import CustomBasicAuthentication
 from rest_framework.authentication import SessionAuthentication
@@ -75,7 +75,7 @@ def getAllReviews(request, movie_id):
     except Movie.DoesNotExist:
         return Response({'detail': 'Movie not found.'}, status=status.HTTP_404_NOT_FOUND)
     
-    serializer = ReviewSerializer(reviews, many=True)
+    serializer = ReviewGetSerializer(reviews, many=True)
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -93,13 +93,13 @@ def addMovie(request):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsAuthenticated])
 def review(request):
-    serializer = ReviewSerializer(data=request.data)
+    serializer = ReviewCreateSerializer(data=request.data)
     if serializer.is_valid():
         movie_id = serializer.validated_data['movie'].id
         newVoteScore = serializer.validated_data['score']
         movie = Movie.objects.filter(pk=movie_id).get()
         movie.updateScore(newVoteScore)
-        serializer.save()
+        serializer.save(user=request.user)
         return Response(serializer.data, status=201)
     
     return Response(serializer.errors, status=400)

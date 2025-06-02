@@ -11,7 +11,12 @@ class MoviePostSerializer(serializers.ModelSerializer):
         model = Movie
         fields = ('name', 'launchDate', 'language', 'rating', 'country', 'director', 'description')
 
-class ReviewSerializer(serializers.ModelSerializer):
+class ReviewCreateSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ('movie', 'score', 'reviewText')
+
+class ReviewGetSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = '__all__'

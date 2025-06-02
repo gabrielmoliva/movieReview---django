@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.contrib.auth.models import AbstractUser
+from django.conf import settings
 
 # Create your models here.
 class Actor(models.Model):
@@ -43,14 +44,7 @@ class Movie(models.Model):
 
     def containsActor(self, actor):
         return self.actors.contains(actor)
-
-class Review(models.Model):
-    id = models.AutoField(primary_key=True)
-    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
-    score = models.FloatField(null=False, validators=[MinValueValidator(0.0), MinValueValidator(10.0)])
-    reviewText = models.TextField(null=False, blank=False, max_length=500)
-    reviewDate = models.DateTimeField(auto_created=True, auto_now=True)
-
+    
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
     username = models.CharField(max_length=100, null=True, blank=True, unique=True)
@@ -61,3 +55,11 @@ class User(AbstractUser):
         self.username=username
         self.email = email
         return self
+
+class Review(models.Model):
+    id = models.AutoField(primary_key=True)
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)
+    score = models.FloatField(null=False, validators=[MinValueValidator(0.0), MinValueValidator(10.0)])
+    reviewText = models.TextField(null=False, blank=False, max_length=500)
+    reviewDate = models.DateTimeField(auto_created=True, auto_now=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
